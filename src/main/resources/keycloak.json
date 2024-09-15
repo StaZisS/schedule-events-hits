@@ -1,0 +1,14 @@
+{
+  "realm": "hits-project",
+  "auth-server-url": "http://localhost:8082/",
+  "ssl-required": "none",
+  "resource": "users-app",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "123456789"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {
+    "credentials": {}
+  }
+}

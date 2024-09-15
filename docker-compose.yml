@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    env_file:
+      - .env
+    ports:
+      - '8082:8080'
+    command: [ "start-dev", "--import-realm", "--log-level=ERROR" ]
+    volumes:
+      - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
+    environment:
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KC_HOSTNAME_STRICT=true
+      - KC_HTTP_ENABLED=true
+      - KC_HTTPS_ENABLED=false
+      - KC_HOSTNAME=localhost
+    networks:
+      - app
+
+  application:
+    env_file:
+      - .env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${SCHEDULE_EVENT_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+    build:
+      dockerfile: Dockerfile
+      network: host
+      context: .
+      args:
+        - DB_URL=jdbc:postgresql://localhost:5432/${SCHEDULE_EVENT_DB}
+        - DB_USERNAME=${POSTGRES_USER}
+        - DB_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '8080:8080'
+    depends_on:
+      db:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - app
+
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - db:/var/lib/postgresql/data
+    networks:
+      - app
+
+  migration:
+    image: migration:latest
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/${SCHEDULE_EVENT_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_SCHEMA=public
+    command: "update"
+    networks:
+      - app
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  app:
+    driver: bridge

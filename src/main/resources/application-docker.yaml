@@ -1,0 +1,51 @@
+spring:
+  liquibase:
+    enabled: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/schedule_event
+    username: postgres
+    password: cNBxF5Ang977BPz7kUr2jHHBMu6bQfnh
+    driver-class-name: org.postgresql.Driver
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI_OAUTH2:http://localhost:8082/realms/hits-project}
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${ISSUER_URI_OAUTH2:http://localhost:8082/realms/hits-project}
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            authorization-grant-type: authorization_code
+            client-id: ${CLIENT_ID_OAUTH2:users-app}
+            client-secret: ${CLIENT_SECRET_OAUTH2:123456789}
+            redirect-uri: http://localhost:8082/login/oauth2/code/keycloak
+            scope:
+              - openid
+              - microprofile-jwt
+              - profile
+
+  jooq:
+    sql-dialect: postgres
+
+hits-project:
+  users-realm: ${REALM_NAME:hits-project}
+  services:
+    users:
+      uri: ${KEYCLOAK_URI:http://localhost:8082}
+
+logging:
+  level:
+    org.springframework.security: trace
+
+authServer:
+  authorizationUrl: http://localhost:8082/realms/hits-project/protocol/openid-connect/auth
+  tokenUrl: http://localhost:8082/realms/hits-project/protocol/openid-connect/token
+  refreshUrl: http://localhost:8082/realms/hits-project/protocol/openid-connect/token
+
+server:
+  port: 8080

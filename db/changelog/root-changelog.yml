@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - preConditions:
+      - onFail: HALT
+      - dbms:
+          type: postgresql
+
+  - include:
+      file: changelog/ddl/initial_schema.sql

@@ -1,0 +1,21 @@
+plugins {
+    alias(libs.plugins.liquibase.plugin)
+}
+
+dependencies {
+    liquibaseRuntime(libs.liquibase.core)
+    liquibaseRuntime(libs.postgresql.driver)
+    liquibaseRuntime(libs.picocli)
+}
+
+liquibase {
+    activities {
+        main {
+            changelogFile "./changelog/root-changelog.yml"
+            url "jdbc:postgresql://${System.getenv().getOrDefault("DB_HOST", "localhost")}:${System.getenv().getOrDefault("DB_PORT", "5432")}/${System.getenv().getOrDefault("SCHEDULE_EVENT_DB", "schedule_event")}"
+            username System.getenv().getOrDefault("DB_USER", "postgres")
+            password System.getenv().getOrDefault("DB_PASSWORD", "cNBxF5Ang977BPz7kUr2jHHBMu6bQfnh")
+            defaultSchemaName System.getenv().getOrDefault("DB_SCHEMA", "public")
+        }
+    }
+}

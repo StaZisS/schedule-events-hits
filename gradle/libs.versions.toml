@@ -1,0 +1,65 @@
+[versions]
+spring-boot = "3.2.4"
+awssdk = "2.25.17"
+keycloak = "24.0.2"
+
+[plugins]
+spring-plugin = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version = "1.0.6.RELEASE" }
+liquibase-plugin = { id = "org.liquibase.gradle", version = "2.2.0" }
+jooq-plugin = { id = "nu.studer.jooq", version = "8.2" }
+
+[libraries]
+#spring
+spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+spring-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq", version.ref = "spring-boot" }
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-websocket = { module = "org.springframework.boot:spring-boot-starter-websocket", version.ref = "spring-boot" }
+spring-client = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
+jackson-data-type = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version = "2.17.0" }
+spring-jdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc" }
+gson = { module = "com.google.code.gson:gson" }
+jts = { module = "com.vividsolutions:jts", version = "1.13" }
+jackson-geo = { module = "de.grundid.opendatalab:geojson-jackson", version = "1.14" }
+spring-reactive = { module = "org.springframework:spring-webflux", version = "6.1.9" }
+
+#liquibase
+liquibase-core = { module = "org.liquibase:liquibase-core", version = "" }
+picocli = { module = "info.picocli:picocli", version = "4.7.5" }
+
+#db drivers
+postgresql-driver = { module = "org.postgresql:postgresql", version = "42.7.2" }
+
+#lombok
+lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
+
+#test
+spring-test-starter = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-test-security = { module = "org.springframework.security:spring-security-test", version = "6.2.2" }
+
+#s3 sdk
+amazon-bom = { module = "software.amazon.awssdk:bom", version.ref = "awssdk" }
+amazon-s3 = { module = "software.amazon.awssdk:s3", version.ref = "awssdk" }
+amazon-netty-nio-client = { module = "software.amazon.awssdk:netty-nio-client", version.ref = "awssdk" }
+amazon-s3control = { module = "software.amazon.awssdk:s3control", version.ref = "awssdk" }
+amazon-s3-transfer-manager = { module = "software.amazon.awssdk:s3-transfer-manager", version.ref = "awssdk" }
+amazon-apache-client = { module = "software.amazon.awssdk:apache-client", version.ref = "awssdk" }
+
+#oauth2
+oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server", version.ref = "spring-boot" }
+oauth2-client = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "spring-boot" }
+
+#keycloak
+keycloak-admin-client = { module = "org.keycloak:keycloak-admin-client", version.ref = "keycloak" }
+keycloak-authz-client = { module = "org.keycloak:keycloak-authz-client", version.ref = "keycloak" }
+
+#swagger
+swagger-web-mvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version = "2.5.0" }
+swagger-ui = { module = "org.springdoc:springdoc-openapi-ui", version = "1.8.0" }
+
+#google
+google-calendar-api = { module = "com.google.apis:google-api-services-calendar", version = "v3-rev20230602-2.0.0" }
+google-api-client = { module = "com.google.api-client:google-api-client", version = "2.2.0" }
+google-oauth-client = { module = "com.google.oauth-client:google-oauth-client-jetty", version = "1.36.0" }

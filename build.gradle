@@ -1,0 +1,136 @@
+import nu.studer.gradle.jooq.JooqEdition
+
+plugins {
+    id 'java'
+    alias(libs.plugins.spring.plugin)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.jooq.plugin)
+    alias(libs.plugins.liquibase.plugin)
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    implementation libs.spring.actuator
+    implementation libs.spring.jooq
+    implementation libs.spring.web
+    implementation libs.spring.validation
+    implementation libs.liquibase.core
+    implementation libs.spring.websocket
+    implementation libs.jackson.data.type
+    implementation libs.spring.jdbc
+    implementation libs.gson
+    implementation libs.jts
+    implementation libs.jackson.geo
+    implementation libs.spring.reactive
+
+    liquibaseRuntime libs.liquibase.core
+    liquibaseRuntime libs.postgresql.driver
+    liquibaseRuntime libs.picocli
+
+    runtimeOnly libs.postgresql.driver
+    jooqGenerator libs.postgresql.driver
+
+    testImplementation libs.spring.test.starter
+    testImplementation libs.spring.test.security
+
+    implementation libs.amazon.bom
+    implementation libs.amazon.s3
+    implementation libs.amazon.netty.nio.client
+    implementation libs.amazon.s3control
+    implementation libs.amazon.s3.transfer.manager
+    implementation libs.amazon.apache.client
+
+    implementation libs.spring.client
+
+    implementation libs.spring.security
+    implementation libs.oauth2.resource.server
+    implementation libs.oauth2.client
+    implementation libs.keycloak.admin.client
+    implementation libs.keycloak.authz.client
+
+    implementation libs.swagger.web.mvc
+    implementation libs.swagger.ui
+
+    implementation libs.google.api.client
+    implementation libs.google.calendar.api
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+
+def db = [
+        url              : System.getenv('DB_URL') ?: 'jdbc:postgresql://localhost:5432/schedule_event',
+        username         : System.getenv('DB_USERNAME') ?: 'postgres',
+        password         : System.getenv('DB_PASSWORD') ?: 'cNBxF5Ang977BPz7kUr2jHHBMu6bQfnh',
+        changelogFilePath: 'src/main/resources/db/changelog/db.changelog-init.yaml'
+]
+
+liquibase {
+    activities {
+        main {
+            changelogFile "${db.changelogFilePath}"
+            url "${db.url}"
+            username "${db.username}"
+            password "${db.password}"
+        }
+    }
+    runList = 'main'
+}
+
+jooq {
+    version = dependencyManagement.importedProperties['jooq.version']
+    edition = JooqEdition.OSS
+
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = "${db.url}"
+                    user = "${db.username}"
+                    password = "${db.password}"
+                    properties {
+                        property {
+                            key = 'PAGE_SIZE'
+                            value = 2048
+                        }
+                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        includes = 'public.*'
+                        excludes = 'public\\.(Databasechangelog|Databasechangeloglock)'
+                    }
+                    target {
+                        packageName = 'com.example.schedule_event'
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
