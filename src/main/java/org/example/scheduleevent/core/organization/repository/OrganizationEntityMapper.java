@@ -10,7 +10,8 @@ public class OrganizationEntityMapper implements RecordMapper<OrganizationRecord
     public OrganizationEntity map(OrganizationRecord record) {
         return new OrganizationEntity(
                 record.getOrganizationId(),
-                record.getName()
+                record.getName(),
+                record.getGoogleCalendarId()
         );
     }
 }

@@ -166,7 +166,7 @@ public class ManagerService {
                 .map(application -> new ApplicationDto(
                         application,
                         userService.getProfile(application.managerId()),
-                        organizationRepository.getOrganizationById(application.organizationId())
+                        organizationRepository.getOrganizationById(application.organizationId()).orElseThrow()
                 ))
                 .toList();
     }

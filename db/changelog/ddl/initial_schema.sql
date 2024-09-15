@@ -8,6 +8,7 @@ create table organization
 (
     organization_id        bigint default nextval('s_organization_id'),
     name                   varchar(255) not null,
+    google_calendar_id      varchar(255) not null,
     primary key (organization_id)
 );
 

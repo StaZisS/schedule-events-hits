@@ -6,6 +6,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.AclRule;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.EventAttendee;
@@ -24,11 +25,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GoogleCalendarClient implements CalendarClient {
     @Override
-    public String saveEvent(EventEntity eventEntity, String accessToken, String email) {
+    public String saveEvent(EventEntity eventEntity, String accessToken, String calendarId) {
         var calendar = calendarClient(accessToken);
         var request = createRequest(eventEntity);
         try {
-            var event = calendar.events().insert("primary", request).execute();
+            var event = calendar.events().insert(calendarId, request).execute();
             return event.getId();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -36,20 +37,20 @@ public class GoogleCalendarClient implements CalendarClient {
     }
 
     @Override
-    public void deleteEvent(String eventId, String accessToken) {
+    public void deleteEvent(String eventId, String accessToken, String calendarId) {
         var calendar = calendarClient(accessToken);
         try {
-            calendar.events().delete("primary", eventId).execute();
+            calendar.events().delete(calendarId, eventId).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void addEventToCalendar(String eventId, String accessToken, String email) {
+    public void addEventToCalendar(String eventId, String accessToken, String email, String calendarId) {
         var calendar = calendarClient(accessToken);
         try {
-            var event = calendar.events().get("primary", eventId).execute();
+            var event = calendar.events().get(calendarId, eventId).execute();
             if (event.getAttendees() == null) {
                 event.setAttendees(List.of());
             }
@@ -59,30 +60,71 @@ public class GoogleCalendarClient implements CalendarClient {
             allAttendees.add(attendee);
             event.setAttendees(allAttendees);
 
-            calendar.events().patch("primary", eventId, event).execute();
+            calendar.events().patch(calendarId, eventId, event).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void removeEventFromCalendar(String eventId, String accessToken, String email) {
+    public void removeEventFromCalendar(String eventId, String accessToken, String email, String calendarId) {
         var calendar = calendarClient(accessToken);
         try {
-            var event = calendar.events().get("primary", eventId).execute();
+            var event = calendar.events().get(calendarId, eventId).execute();
             event.getAttendees().removeIf(attendee -> attendee.getEmail().equals(email));
-            calendar.events().patch("primary", eventId, event).execute();
+            calendar.events().patch(calendarId, eventId, event).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void updateEvent(EventEntity eventEntity, String accessToken) {
-        var calendar = calendarClient(accessToken);
+    public void updateEvent(EventEntity eventEntity, String accessToken, String calendarId) {
+        var client = calendarClient(accessToken);
         var request = createRequest(eventEntity);
         try {
-            calendar.events().update("primary", eventEntity.googleCalendarEventId(), request).execute();
+             client.events().update(calendarId, eventEntity.googleCalendarEventId(), request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String createCalendar(String name, String accessToken) {
+        var client = calendarClient(accessToken);
+
+        var request = new com.google.api.services.calendar.model.Calendar();
+        request.setSummary(name);
+        AclRule rule = new AclRule();
+        AclRule.Scope scope = new AclRule.Scope();
+        scope.setType("group").setValue("schedule-events-hits@googlegroups.com");
+        rule.setScope(scope).setRole("writer");
+        try {
+            var calendar = client.calendars().insert(request).execute();
+            client.acl().insert(calendar.getId(), rule).execute();
+            return calendar.getId();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteCalendar(String calendarId, String accessToken) {
+        var client = calendarClient(accessToken);
+        try {
+            client.calendars().delete(calendarId).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateCalendar(String calendarId, String name, String accessToken) {
+        var client = calendarClient(accessToken);
+        var request = new com.google.api.services.calendar.model.Calendar();
+        request.setSummary(name);
+        try {
+            client.calendars().update(calendarId, request).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

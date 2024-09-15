@@ -5,6 +5,7 @@ import org.example.scheduleevent.clients.calendar.CalendarClient;
 import org.example.scheduleevent.config.auth.GoogleTokenExchange;
 import org.example.scheduleevent.core.events.repository.model.EventEntity;
 import org.example.scheduleevent.core.events.repository.EventsRepository;
+import org.example.scheduleevent.core.organization.repository.OrganizationRepository;
 import org.example.scheduleevent.core.user.UserEntity;
 import org.example.scheduleevent.core.user.UserService;
 import org.example.scheduleevent.public_interface.common.PaginationDto;
@@ -33,6 +34,7 @@ public class EventsService {
     private final UserService userService;
     private final CalendarClient calendarClient;
     private final GoogleTokenExchange googleTokenExchange;
+    private final OrganizationRepository organizationRepository;
 
     @Transactional
     public EventEntity createEvent(CreateEventDto dto, UserInfoDto userInfo) {
@@ -49,8 +51,10 @@ public class EventsService {
                 dto.location(),
                 null
         );
+        var organization = organizationRepository.getOrganizationById(dto.organizationId().orElseThrow())
+                .orElseThrow(() -> new ExceptionInApplication("Organization not found", ExceptionType.NOT_FOUND));
+        var googleCalendarEventId = calendarClient.saveEvent(entity, googleToken, organization.googleCalendarId());
 
-        var googleCalendarEventId = calendarClient.saveEvent(entity, googleToken, userInfo.email());
         var eventWithGoogleId = new EventEntity(
                 null,
                 dto.organizationId().orElseThrow(),
@@ -84,8 +88,11 @@ public class EventsService {
                 eventInDb.googleCalendarEventId()
         );
 
+        var organization = organizationRepository.getOrganizationById(dto.organizationId().orElseThrow())
+                .orElseThrow(() -> new ExceptionInApplication("Organization not found", ExceptionType.NOT_FOUND));
+
         var googleToken = googleTokenExchange.exchangeToken(userInfo.accessToken());
-        calendarClient.updateEvent(entity, googleToken);
+        calendarClient.updateEvent(entity, googleToken, organization.googleCalendarId());
         eventsRepository.updateEvent(entity);
         return entity;
     }
@@ -94,9 +101,11 @@ public class EventsService {
     public void deleteEvent(Long eventId, UserInfoDto userInfo) {
         var event = eventsRepository.getEventById(eventId)
                 .orElseThrow(() -> new ExceptionInApplication("Event not found", ExceptionType.NOT_FOUND));
+        var organization = organizationRepository.getOrganizationById(event.organizationId())
+                .orElseThrow(() -> new ExceptionInApplication("Organization not found", ExceptionType.NOT_FOUND));
 
         var googleToken = googleTokenExchange.exchangeToken(userInfo.accessToken());
-        calendarClient.deleteEvent(event.googleCalendarEventId(), googleToken);
+        calendarClient.deleteEvent(event.googleCalendarEventId(), googleToken, organization.googleCalendarId());
         eventsRepository.deleteEvent(eventId);
     }
 
@@ -145,9 +154,13 @@ public class EventsService {
             throw new ExceptionInApplication("Event deadline is before start date", ExceptionType.INVALID);
         }
 
+        var organization = organizationRepository.getOrganizationById(event.organizationId())
+                .orElseThrow(() -> new ExceptionInApplication("Organization not found", ExceptionType.NOT_FOUND));
+
+
         var googleToken = googleTokenExchange.exchangeToken(userInfo.accessToken());
 
-        calendarClient.addEventToCalendar(event.googleCalendarEventId(), googleToken, userInfo.email());
+        calendarClient.addEventToCalendar(event.googleCalendarEventId(), googleToken, userInfo.email(), organization.googleCalendarId());
         eventsRepository.addUserToEvent(eventId, userInfo.userId());
     }
 
@@ -157,10 +170,12 @@ public class EventsService {
                 .orElseThrow(() -> new ExceptionInApplication("User not subscribed to event", ExceptionType.INVALID));
         var event = eventsRepository.getEventById(eventId)
                 .orElseThrow(() -> new ExceptionInApplication("Event not found", ExceptionType.NOT_FOUND));
+        var organization = organizationRepository.getOrganizationById(event.organizationId())
+                .orElseThrow(() -> new ExceptionInApplication("Organization not found", ExceptionType.NOT_FOUND));
 
         var googleToken = googleTokenExchange.exchangeToken(userInfo.accessToken());
 
-        calendarClient.removeEventFromCalendar(event.googleCalendarEventId(), googleToken, userInfo.email());
+        calendarClient.removeEventFromCalendar(event.googleCalendarEventId(), googleToken, userInfo.email(), organization.googleCalendarId());
         eventsRepository.deleteUserFromEvent(eventId, userInfo.userId());
     }
 }
