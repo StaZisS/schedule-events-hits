@@ -1,7 +1,9 @@
 #!/bin/bash
 
-docker rm -f $(docker ps -a -q --filter "name=backend-application")
-docker rmi $(docker images 'backend-application' -a -q)
+sudo ufw allow ssh
+
+docker rm -f $(docker ps -a -q --filter "name=schedule-events-hits-application")
+docker rmi $(docker images 'schedule-events-hits-application' -a -q)
 docker rm -f $(docker ps -a -q --filter "name=migration")
 docker rmi $(docker images 'migration' -a -q)
 

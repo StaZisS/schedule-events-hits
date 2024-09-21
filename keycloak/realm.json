@@ -920,8 +920,8 @@
       "clientId": "users-app",
       "name": "",
       "description": "",
-      "rootUrl": "http://84.201.168.173:8080",
-      "adminUrl": "http://84.201.168.173:8080",
+      "rootUrl": "http://api.quqee.tech/auth",
+      "adminUrl": "http://api.quqee.tech/auth",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -932,7 +932,7 @@
         "*"
       ],
       "webOrigins": [
-        "http://84.201.168.173:8080"
+        "http://api.quqee.tech/auth"
       ],
       "notBefore": 0,
       "bearerOnly": false,
