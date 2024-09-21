@@ -1,9 +1,43 @@
 spring:
   application:
     name: schedule_event
+
   servlet:
     multipart:
       max-file-size: 500MB
       max-request-size: 1000MB
+
   codec:
     max-in-memory-size: 500KB
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI_OAUTH2:http://84.201.168.173:8085/realms/hits-project}
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${ISSUER_URI_OAUTH2:http://84.201.168.173:8085/realms/hits-project}
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            authorization-grant-type: authorization_code
+            client-id: ${CLIENT_ID_OAUTH2:users-app}
+            client-secret: ${CLIENT_SECRET_OAUTH2:123456789}
+            redirect-uri: http://84.201.168.173:8085/login/oauth2/code/keycloak
+            scope:
+              - openid
+              - microprofile-jwt
+              - profile
+
+hits-project:
+  users-realm: ${REALM_NAME:hits-project}
+  services:
+    users:
+      uri: ${KEYCLOAK_URI:http://84.201.168.173:8085}
+
+authServer:
+  authorizationUrl: http://84.201.168.173:8085/realms/hits-project/protocol/openid-connect/auth
+  tokenUrl: http://84.201.168.173:8085/realms/hits-project/protocol/openid-connect/token
+  refreshUrl: http://84.201.168.173:8085/realms/hits-project/protocol/openid-connect/token
