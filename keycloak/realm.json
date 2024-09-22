@@ -932,7 +932,7 @@
         "*"
       ],
       "webOrigins": [
-        "http://staziss-tech.ru"
+        "*"
       ],
       "notBefore": 0,
       "bearerOnly": false,

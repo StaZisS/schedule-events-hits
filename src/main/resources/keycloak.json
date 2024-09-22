@@ -1,6 +1,6 @@
 {
   "realm": "hits-project",
-  "auth-server-url": "http://84.201.168.173:8085/",
+  "auth-server-url": "http://staziss-tech.ru/",
   "ssl-required": "none",
   "resource": "users-app",
   "verify-token-audience": true,
