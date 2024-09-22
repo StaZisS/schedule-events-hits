@@ -14,18 +14,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER_URI_OAUTH2:http://api.quqee.tech/auth/realms/hits-project}
+          issuer-uri: ${ISSUER_URI_OAUTH2:http://staziss-tech.ru/realms/hits-project}
       client:
         provider:
           keycloak:
-            issuer-uri: ${ISSUER_URI_OAUTH2:http://api.quqee.tech/auth/realms/hits-project}
+            issuer-uri: ${ISSUER_URI_OAUTH2:http://staziss-tech.ru/realms/hits-project}
             user-name-attribute: preferred_username
         registration:
           keycloak:
             authorization-grant-type: authorization_code
             client-id: ${CLIENT_ID_OAUTH2:users-app}
             client-secret: ${CLIENT_SECRET_OAUTH2:123456789}
-            redirect-uri: http://api.quqee.tech/auth/login/oauth2/code/keycloak
+            redirect-uri: http://staziss-tech.ru/login/oauth2/code/keycloak
             scope:
               - openid
               - microprofile-jwt
@@ -35,12 +35,12 @@ hits-project:
   users-realm: ${REALM_NAME:hits-project}
   services:
     users:
-      uri: ${KEYCLOAK_URI:http://api.quqee.tech/auth}
+      uri: ${KEYCLOAK_URI:http://staziss-tech.ru}
 
 authServer:
-  authorizationUrl: http://api.quqee.tech/auth/realms/hits-project/protocol/openid-connect/auth
-  tokenUrl: http://api.quqee.tech/auth/realms/hits-project/protocol/openid-connect/token
-  refreshUrl: http://api.quqee.tech/auth/realms/hits-project/protocol/openid-connect/token
+  authorizationUrl: http://staziss-tech.ru/realms/hits-project/protocol/openid-connect/auth
+  tokenUrl: http://staziss-tech.ru/realms/hits-project/protocol/openid-connect/token
+  refreshUrl: http://staziss-tech.ru/realms/hits-project/protocol/openid-connect/token
 
 my-info:
   serverUrl: http://api.quqee.tech

@@ -920,8 +920,8 @@
       "clientId": "users-app",
       "name": "",
       "description": "",
-      "rootUrl": "http://api.quqee.tech/auth",
-      "adminUrl": "http://api.quqee.tech/auth",
+      "rootUrl": "http://staziss-tech.ru",
+      "adminUrl": "http://staziss-tech.ru",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -932,7 +932,7 @@
         "*"
       ],
       "webOrigins": [
-        "http://api.quqee.tech/auth"
+        "http://staziss-tech.ru"
       ],
       "notBefore": 0,
       "bearerOnly": false,

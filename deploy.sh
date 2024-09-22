@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo ufw allow ssh
-
 docker rm -f $(docker ps -a -q --filter "name=schedule-events-hits-application")
 docker rmi $(docker images 'schedule-events-hits-application' -a -q)
 docker rm -f $(docker ps -a -q --filter "name=migration")
