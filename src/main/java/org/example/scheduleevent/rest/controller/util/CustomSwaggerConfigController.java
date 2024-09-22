@@ -13,7 +13,7 @@ public class CustomSwaggerConfigController {
     public Map<String, String> customSwaggerConfig() {
 
         Map<String, String> defaultConfig = new HashMap<>();
-        defaultConfig.put("oauth2RedirectUrl", "http://api.quqee.tech/swagger-ui/oauth2-redirect.html");
+        defaultConfig.put("oauth2RedirectUrl", "https://api.quqee.tech/swagger-ui/oauth2-redirect.html");
         defaultConfig.put("configUrl", "/v3/api-docs/swagger-config");
         defaultConfig.put("url", "/v3/api-docs");
         defaultConfig.put("validatorUrl", "");
