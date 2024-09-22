@@ -7,6 +7,7 @@ import org.example.scheduleevent.public_interface.user.UpdateUserDto;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.scheduleevent.public_interface.user.UserRoles;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -14,9 +15,11 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -144,8 +147,12 @@ public class KeycloakUserClient implements UserClient {
                 userRepresentation.getUsername(),
                 userRepresentation.getEmail(),
                 null,
-                //TODO
-                null
+                userRepresentation.getRealmRoles().stream()
+                        .map(realmRole -> realmRole.replace("ROLE_", ""))
+                        .filter(role ->
+                                Arrays.stream(UserRoles.values()).map(Enum::name).collect(Collectors.toSet()).contains(role)
+                        ).map(UserRoles::valueOf)
+                        .collect(Collectors.toSet())
         );
     }
 
