@@ -13,7 +13,11 @@ services:
     environment:
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
-      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT=false
       - KC_HTTP_ENABLED=true
       - KC_HTTPS_ENABLED=false
       - KC_HOSTNAME=${SERVER_HOST}
+      - KC_HOSTNAME_DEBUG=true
+      - KC_HOSTNAME_PORT=8085
+      - HOSTNAME_STRICT=false
+      - KC_PROXY=none
