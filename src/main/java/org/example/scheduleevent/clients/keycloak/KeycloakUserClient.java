@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class KeycloakUserClient implements UserClient {
     private final Keycloak keycloak;
     private final String realm;
+    private final RoleClient roleClient;
 
     @Override
     public String registerUser(UserEntity entity) {
@@ -147,12 +148,7 @@ public class KeycloakUserClient implements UserClient {
                 userRepresentation.getUsername(),
                 userRepresentation.getEmail(),
                 null,
-                userRepresentation.getRealmRoles().stream()
-                        .map(realmRole -> realmRole.replace("ROLE_", ""))
-                        .filter(role ->
-                                Arrays.stream(UserRoles.values()).map(Enum::name).collect(Collectors.toSet()).contains(role)
-                        ).map(UserRoles::valueOf)
-                        .collect(Collectors.toSet())
+                roleClient.getRoles(userRepresentation.getId())
         );
     }
 

@@ -4,6 +4,7 @@ import org.example.scheduleevent.clients.calendar.CalendarClient;
 import org.example.scheduleevent.clients.calendar.GoogleCalendarClient;
 import org.example.scheduleevent.clients.keycloak.KeycloakRoleClient;
 import org.example.scheduleevent.clients.keycloak.KeycloakUserClient;
+import org.example.scheduleevent.clients.keycloak.RoleClient;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -31,10 +32,12 @@ public class ClientBeans {
     @Bean
     public KeycloakUserClient usersRestClient(
             Keycloak keycloak,
-            @Value("${hits-project.users-realm}") String realm) {
+            @Value("${hits-project.users-realm}") String realm,
+            RoleClient roleClient) {
         return new KeycloakUserClient(
                 keycloak,
-                realm
+                realm,
+                roleClient
         );
     }
 

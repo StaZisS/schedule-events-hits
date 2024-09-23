@@ -8,4 +8,5 @@ public interface RoleClient {
     void assignRole(String userId, Set<UserRoles> roles);
 
     void removeRole(String userId, String roleName);
+    Set<UserRoles> getRoles(String userId);
 }
