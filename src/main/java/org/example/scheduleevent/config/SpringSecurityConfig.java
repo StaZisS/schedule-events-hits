@@ -17,14 +17,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
 @EnableMethodSecurity
+@EnableWebMvc
 public class SpringSecurityConfig {
     private static final String[] WHITE_LIST = {
             "/swagger-ui/**",
