@@ -40,6 +40,7 @@ public class SpringSecurityConfig {
                     configuration.setAllowedOrigins(List.of("*"));
                     configuration.setAllowedMethods(List.of("*"));
                     configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowedHeaders(List.of("*"));
                     return configuration;
                 }))
                 .csrf(CsrfConfigurer::disable)
