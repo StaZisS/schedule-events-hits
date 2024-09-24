@@ -63,7 +63,8 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(c -> c.requestMatchers(WHITE_LIST).anonymous()
                         .anyRequest().access(customAuthManager())
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .headers(c -> c.httpStrictTransportSecurity(s -> s.maxAgeInSeconds(0).includeSubDomains(true)));
         return http.build();
     }
 
