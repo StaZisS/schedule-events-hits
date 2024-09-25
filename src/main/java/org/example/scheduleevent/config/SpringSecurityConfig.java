@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://api.quqee.tech"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);  // Разрешить использование кук
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
@@ -54,7 +54,7 @@ public class SpringSecurityConfig {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://api.quqee.tech"));
                     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+                    configuration.setAllowedHeaders(Arrays.asList("*"));
                     configuration.setAllowCredentials(true);
                     return configuration;
                 }))
