@@ -63,18 +63,4 @@ public class AdminController {
         var entity = organizationService.updateOrganization(organizationId, dto, userInfo);
         return map(entity);
     }
-
-    @GetMapping(path = "/organizations")
-    @SecurityRequirement(name = "oauth2")
-    public List<OrganizationView> getOrganizations(@RequestParam Optional<Integer> page,
-                                                   @RequestParam Optional<Integer> size) {
-        var paginationDto = new PaginationDto(
-                page.orElse(1),
-                size.orElse(10)
-        );
-        return organizationService.getOrganizations(paginationDto).stream()
-                .map(OrganizationMapper::map)
-                .toList();
-    }
-
 }
